@@ -1,107 +1,92 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-
-
+import { useState, useEffect } from 'react'
 
 function App() {
   const [display, setDisplay] = useState("")
-  
-  const handleCalc = (e)=>{ 
-    e.preventDefault()
-    setDisplay(e.target.value)
+
+  const handleClick = (value) => {
+    if (value === "C" || value === "Escape") {
+      setDisplay("")
+    } else if (value === "Del" || value === "Backspace") {
+      setDisplay(display.slice(0, -1))
+    } else if (value === "=" || value === "Enter") {
+      try {
+        setDisplay(eval(display).toString())
+      } catch {
+        setDisplay("Error")
+      }
+    } else if ("0123456789+-*/.%".includes(value)) {
+      setDisplay(display + value)
+    }
   }
+
+  // Handle keyboard input
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      handleClick(e.key)
+    }
+    window.addEventListener("keydown", handleKeyPress)
+    return () => window.removeEventListener("keydown", handleKeyPress)
+  }, [display])
 
   return (
     <>
-      {/* <!-- component --> */}
       <style>@import url(https://cdnjs.cloudflare.com/ajax/libs/MaterialDesign-Webfont/5.3.45/css/materialdesignicons.min.css);</style>
 
       <div className="min-w-screen min-h-screen bg-blue-900 flex items-center justify-center px-5 py-5">
-        <div className="w-full mx-auto rounded-xl bg-gray-100 shadow-xl shadow-blue-600  text-gray-800 relative overflow-hidden" style={{ maxWidth: '300px' }}>
+        <div
+          className="w-full mx-auto rounded-xl bg-gray-100 shadow-xl shadow-blue-600 text-gray-800 relative overflow-hidden"
+          style={{ maxWidth: "300px" }}
+        >
+          {/* Display */}
           <div className="w-full h-40 bg-gradient-to-b from-gray-800 to-gray-700 flex items-end text-right">
-            <div className="w-full py-5 px-6 text-6xl text-white font-thin">{display} </div>
+            <div className="w-full py-5 px-6 text-6xl text-white font-thin break-all">{display}</div>
           </div>
+
+          {/* Buttons */}
           <div className="w-full bg-gradient-to-b from-indigo-400 to-indigo-500">
+
+            {/* Row 1 */}
             <div className="flex w-full">
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="C"  onClick = {(e)=> setDisplay("")}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="Del"  onClick = {(e)=> setDisplay(display.slice( 0 , -1))}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="%"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="/"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
+              <button onClick={() => handleClick("C")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">C</button>
+              <button onClick={() => handleClick("Del")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">Del</button>
+              <button onClick={() => handleClick("%")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">%</button>
+              <button onClick={() => handleClick("/")} className="w-1/4 h-16 border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">/</button>
             </div>
+
+            {/* Row 2 */}
             <div className="flex w-full">
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="7"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="8"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="9"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="*"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
+              <button onClick={() => handleClick("7")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">7</button>
+              <button onClick={() => handleClick("8")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">8</button>
+              <button onClick={() => handleClick("9")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">9</button>
+              <button onClick={() => handleClick("*")} className="w-1/4 h-16 border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">*</button>
             </div>
+
+            {/* Row 3 */}
             <div className="flex w-full">
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="4"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="5"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="6"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="-"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
+              <button onClick={() => handleClick("4")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">4</button>
+              <button onClick={() => handleClick("5")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">5</button>
+              <button onClick={() => handleClick("6")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">6</button>
+              <button onClick={() => handleClick("-")} className="w-1/4 h-16 border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">-</button>
             </div>
+
+            {/* Row 4 */}
             <div className="flex w-full">
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="1"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="2"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="3"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-b border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="+"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
+              <button onClick={() => handleClick("1")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">1</button>
+              <button onClick={() => handleClick("2")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">2</button>
+              <button onClick={() => handleClick("3")} className="w-1/4 h-16 border-r border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">3</button>
+              <button onClick={() => handleClick("+")} className="w-1/4 h-16 border-b border-indigo-400 hover:bg-indigo-700 text-white text-xl">+</button>
             </div>
+
+            {/* Row 5 */}
             <div className="flex w-full">
-              <div className="w-1/4 border-r border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="0"  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-1/4 border-r border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="."  onClick = {(e)=> setDisplay(display + e.target.value)}/>
-              </div>
-              <div className="w-2/4 border-r border-indigo-400">
-                <input className="w-full h-16 outline-none focus:outline-none hover:bg-indigo-700 hover:bg-opacity-20 text-white text-xl font-light text-center caret-transparent" defaultValue="="  onClick = {(e)=> setDisplay(eval(display))}/>
-              </div>
+              <button onClick={() => handleClick("0")} className="w-1/4 h-16 border-r border-indigo-400 hover:bg-indigo-700 text-white text-xl">0</button>
+              <button onClick={() => handleClick(".")} className="w-1/4 h-16 border-r border-indigo-400 hover:bg-indigo-700 text-white text-xl">.</button>
+              <button onClick={() => handleClick("=")} className="w-2/4 h-16 border-indigo-400 hover:bg-indigo-700 text-white text-xl">=</button>
             </div>
+
           </div>
         </div>
       </div>
-
-      {/* <!-- BUY ME A BEER AND HELP SUPPORT OPEN-SOURCE RESOURCES --> */}
-      {/* <div className="flex items-end justify-end fixed bottom-0 right-0 mb-4 mr-4 z-10">
-        <div>
-          <a title="Buy me a beer" href="https://www.buymeacoffee.com/scottwindon" target="_blank" className="block w-16 h-16 rounded-full transition-all shadow hover:shadow-lg transform hover:scale-110 hover:rotate-12">
-            <img className="object-cover object-center w-full h-full rounded-full" src="https://i.pinimg.com/originals/60/fd/e8/60fde811b6be57094e0abc69d9c2622a.jpg" />
-          </a>
-        </div>
-      </div> */}
     </>
   )
 }
